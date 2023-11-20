@@ -1,4 +1,4 @@
-# Quantum_challenge
+# Quantum challenge
 
 This is a repository for quanutum hackathon.
 
