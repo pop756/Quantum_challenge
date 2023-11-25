@@ -1,0 +1,94 @@
+Get ready for IonQ's Trotterization challenge!
+##############################################
+
+Introduction
+============
+
+This challenge explores a quantum circuit compresssion scheme enabling accurate 
+quantum time dynamics (QTD) on noisy Near-Intermediate Scale Quantum (NISQ) era 
+devices. Interestingly, the compression scheme is powered by the Yang-Baxter 
+Equation (YBE), which plays an important role in many seemingly unrelated areas 
+of modern mathematics and theoretical physics, including anyonic quantum 
+computing, quantum groups, solvable lattice models, certain conformal field
+theories, and invariants of knots and $3$-manifolds, amongst others.
+
+QTD is a key application of quantum computing. In fact, it largely explains why
+we started thinking about quantum computers in the first place:
+
+   "Nature isn't classical, dammit, and if you want to make a simulation of
+   nature, you'd better make it quantum mechanical, and by golly it's a
+   wonderful problem, because it doesn't look so easy."
+
+   -- Richard Feynman (1981)
+
+Quantum computers can efficiently implement some of the time propagation
+operators arising in QTD simulations. But today we face a critical issue:
+the depth of the quantum circuits designed to simulate QTD increases with
+desired approximation accuracy. This is problematic in the current NISQ era
+because today's hardware implements noisy quantum gates, and this constrains the
+depth of the circuits we can effectively execute on hardware. This motivates
+the need for a quantum circuit compression scheme!
+
+Instructions
+************
+
+Complete this challenge by reading through the following pages, answering the
+relevant exercises, and implementing the necessary functionality. Please respond
+to exercises by filling out the ``solution`` environment in the attached
+``exercises.tex`` file. We have provided "starter code" in the ``src`` directory
+and your implementations will be graded automatically. Please do **not** alter 
+any file or function names, or function contracts (method signatures and return 
+values). We recommend that you progress through the challenge sequentially, 
+since Stage $n + 1$ typically depends on Stage $n$. In addition, the challenge
+becomes progressively more difficult and we provide less detailed guidance as you
+advance through the various stages.
+
+The required functionality is described in the source code documentation and 
+accompanying explanations. Please implement it by replacing the relevant::
+
+   #####################
+   ### Fill this in! ###
+   #####################
+
+blocks as appropriate. Every method features a usage example that serves as a
+basic unit test. Be sure to use the accompanying :class:`.XYZEvolutionTestSuite`
+to test your code as you go! We provide various references throughout for further
+reading.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Challenge
+
+   spin_chains
+   schrodinger_dynamics
+   propagators
+   xyz_evolution
+   staggered_magnetization
+   ybe_compression
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Autograder
+
+   test_suite
+
+
+References
+**********
+
+.. bibliography::
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
+..
+  comment: the following math environment forces Sphinx to load MathJax
+  in the index.rst pages. Do not delete it!
+
+.. math::
+   :nowrap:

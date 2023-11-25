@@ -1,0 +1,120 @@
+Stage 0: Spin chains 101
+========================
+
+Introduction to the Heisenberg model
+------------------------------------
+
+In this challenge we will focus on simulating QTD of 1-D integrable spin chains
+with nearest-neighbor interactions. In particular, we will consider the
+Heisenberg model, which is one of the simplest statistical mechanical models
+used to study the physics of magnetic systems. We will use the Heisenberg model
+to study a system's ferromagnetic properties by computing its time-dependent staggered magnetization.
+
+The Heisenberg model considers a magnetic system comprised by "spins" $\sigma_j$
+(particles with a magnetic dipole moment) placed at every site in a lattice. 
+Here we denote the magnetic north and south pole of each particle by $\uparrow$ 
+and $\downarrow$, respectively. We only consider the 1-D case, so our lattice is
+a "chain." Thus in the classical picture the state of our system is completely 
+described by a sequence of up and down arrows.
+
+However, as in the related Ising model, we treat the spins quantum mechanically.
+This means we replace each $\sigma_j \in \{\uparrow, \downarrow\}$ by a
+two-level quantum system with state space described by $\mathbb{C}^2$. We label 
+the computational basis for each spin state-space by
+
+.. math::
+   
+      \vert {\downarrow} \rangle \leftrightarrow \vert 0 \rangle 
+      \quad\text{and}\quad
+      \vert {\uparrow} \rangle \leftrightarrow \vert 1 \rangle.
+
+This means the state of an $N$-particle system is described by a state-vector
+$\vert \psi \rangle \in \left(\mathbb{C}^2\right)^{\otimes N}$.
+
+In the quantum-mechanical picture, the Hamiltonian captures the system dynamics. 
+To define it, we recall the Pauli matrices $\sigma^x$, $\sigma^y$, and 
+$\sigma^z$: they are given by
+
+.. math::
+
+   \sigma^x =
+   \begin{bmatrix}
+   0 & 1 \\
+   1 & 0
+   \end{bmatrix},
+   \quad
+   \sigma^y =
+   \begin{bmatrix}
+   0 & -i \\
+   i & 0
+   \end{bmatrix},
+   \quad\text{and}\quad
+   \sigma^z =
+   \begin{bmatrix}
+   1 & 0 \\
+   0 & -1
+   \end{bmatrix}.
+
+In addition, for $2 \times 2$ complex matrix and any $1 \leq j \leq N$, we let
+
+.. math::
+   
+   A_j = I^{\otimes j-1} \otimes A \otimes I^{\otimes N-j}
+
+denote the operator that applies $A$ on the $j$th spin and acts trivially on all
+other sites. With this notation in mind, we are ready to introduce the 
+Hamiltonian for our spin chain.
+
+The Heisenberg model proposes the following Hamiltonian for an $N$-particle 
+system:
+
+.. math::
+   :name: hamiltonian
+
+   \mathcal{H} = {1 \over 2} \sum_{j=1}^{N - 1} 
+   \left(
+      J_x \sigma^x_j \sigma^x_{j+1}
+      + J_y \sigma^y_j \sigma^y_{j+1}
+      + J_z \sigma^z_j \sigma^z_{j+1}
+   \right)
+   + \frac{h}{2} \sum_{j=1}^N \sigma_j^z.
+
+The coupling parameters $J_x, J_y$, and $J_z$ denote the exchange interaction 
+between adjacent spins along the $x, y$, and $z$ directions. In addition, $h$
+denotes the external magnetic field strength. We write 
+$\mathcal{H} = \mathcal{H}_S + \mathcal{H}_M$ to indicate the total Hamiltonian
+is the sum of the spin-spin interaction and external magnetic field terms.
+
+We take a moment to comment on nomenclature: it is common to name the model
+depending on the values of $J_x, J_y$, and $J_z$. When all three constants are
+distinct, the model is known as the Heisenberg XYZ model; in case 
+$J_x = J_y \neq J_z$, it is the XXZ model; if all three $J_x = J_y = J_z$,
+it is known as the XXX model.
+
+.. admonition:: Exercise 0.1
+   :name: spin_terms_commute
+
+   Show that the spin interaction terms acting on a common pair of sites along
+   different axes commute. Concretely, let
+
+   .. math::
+
+      [A, B] = AB - BA
+
+   denote the *commutator* of $A$ and $B$, let 
+   $S_j^\alpha = \sigma_j^\alpha \sigma_{j+1}^\alpha$ denote the spin-spin
+   interaction term at the $(j, j+1)$-st sites along the $\alpha$ direction, 
+   and show that
+
+   .. math::
+
+      [S_j^\alpha, S_j^\beta] = 0.
+
+   Now show that, conversely, spin interaction terms at adjacent pairs of sites 
+   do **not** commute; that is, prove that
+
+   .. math::
+
+      [S_j^\alpha, S_{j+1}^\beta] \neq 0.
+
+This result will be useful later...

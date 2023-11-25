@@ -1,0 +1,71 @@
+Stage 4: Staggered magnetization
+================================
+
+At this stage we turn to studying the ferromagnetic properties of our spin
+chain. We evaluate the performance of the QTD circuits we've implemented so
+far.
+
+Concretely, we wish to plot the chain's `staggered magnetization <https://physics.stackexchange.com/questions/653405/what-is-staggered-magnetization>`_, which is given by
+
+.. math::
+    :name: stag_mag
+    
+    M_{\mathrm{stag}}(t) = \frac{1}{N} \sum_{j=1}^N (-1)^j \, \langle \psi(t) \mid \sigma_j^Z \mid \psi(t) \rangle,
+
+as a function of time. Here 
+$\vert \psi(t) \rangle = U(t) \vert \psi_0 \rangle$ denotes the chain's 
+time-dependent quantum state.
+
+Given a time value $t \geq 0$ and an initial state $\vert \psi_0 \rangle$, we 
+compute $M_{\mathrm{stag}}(t)$ using the time evolution circuits implemented 
+in Stage 3: prepare and measure $\vert \psi(t) \rangle$ using a quantum backend
+and then compute the expected value of the observable
+
+.. math::
+    
+    \frac{1}{N} \sum_{j=1}^N (-1)^j \, \sigma_j^Z
+
+with respect to the observed measurement distribution on a classical device.
+
+.. admonition:: Exercise 4.1
+
+    Suppose $\mathcal{O}$ is a Hermitian observable whose matrix with respect
+    to the computational basis is diagonal. Let $\lambda_x$ denote the 
+    eigenvalue of $\mathcal{O}$ corresponding to the computational basis state
+    $\vert x \rangle$. Let
+    $\vert \psi \rangle = \sum_x \alpha_x \vert x \rangle$ denote any quantum
+    state, written as a superposition over the computational basis, and let
+    $p_x = \vert \alpha_x \vert^2$ denote the probability of observing
+    $\vert \psi \rangle$ in the state $\vert x \rangle$.
+    
+    Show that the expectation value
+
+    .. math::
+
+        \langle \psi \vert\, \mathcal{O} \,\vert \psi \rangle =
+        \sum_{x} p_x \lambda_x 
+
+    is simply a weighted average of the eigenvalues of $\mathcal{O}$.
+
+
+Expectation value of magnetization operator
+-------------------------------------------
+
+Now use the last result to implement the :meth:`.StaggeredMagnetization.energies`
+method defined in ``src.staggered_magnetization``. This will allow you to compute
+compute $M_{\mathrm{stag}}(t)$ by calling an instance of the
+:class:`.StaggeredMagnetization` class, as exemplified below.
+
+.. automodule:: src.staggered_magnetization
+    :members:
+    :show-inheritance:
+
+Putting it all together: testing the (poor) performance of uncompressed QTD circuits
+------------------------------------------------------------------------------------
+
+Head over to the ``xyz_evolution_challenge.ipynb`` notebook and plot the staggered
+magnetization $M_{\mathrm{stag}}(t)$ of the spin chain as a function of time, for
+$0 \leq t \leq 2.5$ and using $n = 100$ Trotter steps. Use the coupling constants
+$(J_x, J_y, J_z) = (-2.4, 0, -0.6)$ and no external magnetic field (set $h = 0$).
+Repeat this exercise using ``num_qubits=3`` and ``num_qubits=4`` and include your
+plots with your submission.

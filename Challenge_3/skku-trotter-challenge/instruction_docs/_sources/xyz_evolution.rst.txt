@@ -1,0 +1,144 @@
+Stage 3: Trotterized evolution
+==============================
+
+We'd like to use our :class:`.UXYZGate` and :class:`.UXZGate` to implement the
+time evolution operator $U(t) = e^{-i \mathcal{H}_S t}$ when $n \geq 3$. However,
+a fundamental issue arises: in this case the Hamiltonian contains non-commuting
+terms. 
+
+.. admonition:: Exercise 3.1
+
+    Use the binomial theorem to show that if $A$ and $B$ are commuting
+    $m \times m$ matrices then 
+
+    .. math::
+
+        e^A e^B = e^{A + B}.
+
+    In addition, show that this generally fails if $A$ and $B$ do **not** 
+    commute; that is, find two matrices $A$, $B$ such that $[A, B] \neq 0$ and
+
+    .. math::
+
+        e^A e^B \neq e^{A + B}.
+
+
+.. NOTE::
+    
+    In general, the `Baker-Campbell-Hausdorff formula <https://en.wikipedia.org/wiki/Baker–Campbell–Hausdorff_formula>`_ expresses the matrix $Z$ such that
+    $e^A e^B = e^Z$ as a series in nested commutators of $A$ and $B$.
+
+Recall that in :ref:`Exercise 0.1 <spin_terms_commute>` you showed that the spin 
+interaction terms on adjacent sites do **not** commute. This means we **cannot**
+simply write the time propagator
+
+.. math::
+    
+    U(t) = e^{-it\sum_{j = 1}^{N-1} H_j}
+
+as a product of block operators. Here 
+$H_j = {1 \over 2} \sum_{\alpha \in \{x, y, z\}} J_{\alpha} \, \sigma_j^\alpha \sigma_{j+1}^\alpha$
+groups the terms in the Hamiltonian acting non-trivially on the 
+$(j,j+1)$-stsites.
+
+However, the formula
+
+.. math::
+
+    e^{A + B} = \lim_{n \to \infty} \left(e^{A/n} e^{B/n}\right)^n,
+
+holds for every $A$ and $B$, so we can truncate it to *approximate* $U(t)$ as
+a product of our block operators. This is the `Trotter-Suzuki 
+<https://learn.microsoft.com/en-us/azure/quantum/user-guide/libraries/chemistry/concepts/algorithms>`_ approximation scheme.
+
+Although we could *Trotterize* the evolution operator directly, we will obtain
+a shallower circuit once we identify two large commuting families of operators
+(as in the diagram below) and realizing the corresponding time propagators 
+can be implemented (exactly) as a product of block operators. In particular, 
+notice that spin interaction terms at "distant" sites commute.
+
+.. image:: _static/spin_chain.png
+    :align: center
+    :width: 600
+    :alt: A spin chain
+
+.. admonition:: Exercise 3.2
+
+    Write $\mathcal{H}_S = \mathcal{H}_{\mathrm{even}} + \mathcal{H}_{\mathrm{odd}}$
+    as a sum of even- and odd-indexed spin interaction terms. 
+
+    Briefly explain why the summands in $H_{\mathrm{even}}$ ($H_{\mathrm{odd}}$)
+    pairwise commute; in other words, justify the following equalities:
+
+    .. math::
+
+        e^{-it \mathcal{H}_{\mathrm{even}}} = \prod_j B_{2j}(\theta)
+        \quad\text{and similarly}\quad
+        e^{-it H_{\mathrm{odd}}} = \prod_j B_{2j-1}(\theta),
+
+    with $B_j$ acting as the block operator on the $(j, j+1)$-st sites.
+
+With this in mind, we apply the Trotter-Suzuki formula to approximate the 
+time propagator
+
+.. math::
+    
+    U(t) = e^{-i t \mathcal{H}_S} \approx
+    \left(
+        e^{-\frac{it}{n} \mathcal{H}_{\mathrm{even}}}
+        \cdot
+        e^{-\frac{it}{n} \mathcal{H}_{\mathrm{odd}}}
+    \right)^n
+    = \left[
+        \left(\prod_j B_{2j}(\theta/n) \right)
+        \left(\prod_j B_{2j-1}(\theta/n) \right)
+    \right]^n
+
+using $n$ Trotter steps. This approximation results in a circuit comprised
+by alternating layers of block operators, as illustrated in the figure below
+(taken from :cite:t:`peng`).
+
+.. figure:: _static/alt_block_layers.png
+    :align: center
+    :width: 600
+    :alt: Approximating the time propagator using alternating layers of blocks
+
+    Approximating the time propagator $U(t)$ using alternating layers of block
+    operators. Here $\Delta t = t / n$
+
+.. admonition:: Exercise 3.3
+
+    What is the depth of the circuit illustrated above? Compare this to the
+    depth of the circuit that directly Trotterizes
+
+    .. math::
+        
+        U(t) \approx \left( \prod_j B_j(\theta/n) \right)^n.
+
+When an external magnetic field is present, i.e., when $h \neq 0$, we 
+approximate the time propagator $U(t)$ as follows:
+
+.. math::
+
+    U(t) = e^{-it \mathcal{H}_S -it \mathcal{H}_M}
+    \approx \left(
+    e^{-\frac{it}{n} \mathcal{H}_{even}} \cdot
+    e^{-\frac{it}{n} \mathcal{H}_{odd}} \cdot
+    \prod_{j = 1}^n R_j^z(th/n)
+    \right)^n,
+
+where $R^z(\theta) = e^{-\frac{i\theta}{2} \sigma^z}$ denotes the single-qubit
+rotation about the $z$-axis. This means we add a layer of single-qubit 
+rotations for every pair of alternating block operator layers.
+
+Approximate QTD using layered circuits
+--------------------------------------
+
+Now it's your turn! Implement the private
+:meth:`.XYZEvolutionCircuit._construct_evolution_qc` method defined in
+``src.xyz_evolution.py`` to construct a quantum circuit approximating
+the spin chain's QTD.
+
+.. automodule:: src.xyz_evolution
+    :members:
+    :show-inheritance:

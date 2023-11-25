@@ -1,0 +1,168 @@
+Stage 5: (Advanced) YBE-powered compression
+===========================================
+
+Finally, we implement the YBE-powered quantum circuit compression scheme
+for the linear-depth Trotterization circuits constructed in Stage 3. Under 
+certain conditions on the coupling constants, we will obtain circuits
+whose depth is totally independent of the Trotter number! 
+
+This means we can approximate the time propagator $U(t)$ to arbitrary accuracy
+without paying **any** cost in terms of added circuit depth. The catch is that
+we must be willing to expend some (classical) computation up front in order to 
+find appropriate parameters for the compressed circuit.
+
+The approximation scheme relies on two circuit identities, known as 
+*reflection symmetry* and *merge* in :cite:t:`peng`. The first is a
+YBE; when at least one of the coupling constants is zero, there exist
+parameters $\theta', \theta''$, and $\theta'''$ such that, for instance,
+
+.. math::
+    
+    B_j(\theta) B_{j+1}(\theta) B_j(\theta) 
+    = B_{j+1}(\theta') B_j(\theta'') B_{j+1}(\theta'''),
+
+for any given initial parameter choice. The figure below illustrates the
+so-called reflection symmetry.
+
+.. figure:: _static/reflection_symmetry.png
+    :align: center
+    :width: 600
+    :alt: Reflection symmetry identity satisfied by the block operators when $J_x \cdot J_y \cdot J_z = 0$.
+
+    Reflection symmetry identity satisfied by the block operators when $J_x \cdot J_y \cdot J_z = 0$
+
+
+The so-called *merge* identity allows for merging two blocks in acting on the
+pair of sites into one; in particular,
+
+.. math::
+
+    B_j(\theta) B_j(\theta') = B_j(\theta + \theta')
+
+for any $\theta, \theta' \in \mathbb{R}^3$.
+
+When combined, these identities explain the circuit compression scheme. For instance,
+if we consdier $N = 3$ sites and use $n = 2$ Trotter steps, we can compress the
+Trotterized circuit as follows:
+
+.. math::
+    
+    \begin{align*}
+        U(t) &\approx \big(B_1(\theta) B_2(\theta) \big)^2 \\
+        &= \big(B_1(\theta) B_2(\theta)\big) \big(B_1(\theta) B_2(\theta)\big) \\
+        &= \big(B_1(\theta) B_2(\theta) B_1(\theta)\big) B_2(\theta) \\
+        &= \big(B_2(\theta') B_1(\theta'') B_2(\theta''')\big) B_2(\theta) \\ 
+        &= B_2(\theta') B_1(\theta'') B_2(\theta''' + \theta),
+    \end{align*}
+
+The problem is finding the new parameters $\theta'$, $\theta''$, and $\theta'''$.
+For simplicity, we will assume a black-box algorithm for to complete this task:
+simply use the provided :meth:`src.circuit_compressor.get_optimized_params`
+method.
+
+The compression scheme can be extended to longer spin chains. For instance,
+the figure below, taken from :cite:t:`peng`, illustrates how to compose a
+sequence of symmetry reflections to produce the *mirror* identity that can
+be used to compress circuits with $N = 4$ qubits.
+
+.. figure:: _static/mirror_identity.png
+    :align: center
+    :width: 600
+    :alt: A sequence of reflection symmetries on 3 sites used to construct the so-called identity on $N = 4$ qubits.
+
+    A sequence of reflection symmetries on 3 sites used to construct the so-called identity on $N = 4$ qubits.
+
+The following figure, also taken from :cite:t:`peng`, illustrates how to combine the
+mirror and merge identities to produce a compression scheme for $N = 4$ lattice sites.
+
+.. figure:: _static/four_site_compression.png
+    :align: center
+    :width: 600
+    :alt: Combining the mirror (red braces) and merge identity (black dotted box) to compress a pair of columns in the Trotterized evolution circuit on $N = 4$ sites.
+
+    Combining the mirror (red braces) and merge identity (black dotted box) to compress a pair of columns in the Trotterized evolution circuit on $N = 4$ sites.
+
+It turns out that for any number of Trotter steps $n$, you can always compress the Trotterized
+evolution circuit on $N$ sites down to a quantum circuit with just $N (N-1) / 2$ block operators.
+You can prove this below in the algebraic formulation section.
+
+Constant-depth(!) time evolution under certain Heisenberg Hamiltonians
+----------------------------------------------------------------------
+
+For the rest of this section, assume $J_y = h = 0$, so we will focus on the
+$H_x + H_z$ Hamiltonian.
+
+Now implement the YBE-powered compression scheme for $N = 3, 4$ sites using the
+"moves" illustrated in the figures above. Do this in three steps: first implement
+the :meth:`.CircuitCompressor.get_ybe_update` method, then the
+:meth:`.CircuitCompressor.get_mirror_update` method, and finally proceed to the
+:meth:`.CircuitCompressor.compress_circuit` method. 
+
+*Hint*: Label the blocks in the circuit and identify which sets of parameters are
+involved in each symmetry application.
+
+.. automodule:: src.circuit_compressor
+    :members:
+
+.. admonition:: Exercise 5.1
+
+    Now modify the ``xyz_evolution_challenge.ipynb`` notebook so it also computes the
+    staggered magnetization $M_{\mathrm{stag}}(t)$ using the compressed circuits for
+    $N = 3$ and $N = 4$ sites. Comment on your results and include your plots showing
+    four magnetization curves on the same set of axes for each $N$.
+
+.. admonition:: Challenge!
+
+    Use the reflection symmetry and the merge identity to design and implement a compression
+    scheme for circuits on $N > 4$ lattice sites. Report the complexity of your algorithm
+    as the number of reflection symmetries required.
+
+(Expert) Algebraic formulation 
+------------------------------
+
+To conclude, we prove the following theorem:
+
+    Suppose the block operators $B_j$ satisfy the YBE. Then any Trotterized evolution 
+    circuit constructed considered here, using any number of block operators, may be 
+    expressed as an **equivalent** circuit with depth at most $N$ and using at most
+    $N(N-1)/2$ blocks.
+
+We consider a parameter-independent version of the block operators by simply forgetting they 
+are parametrized. However, we do not lose generality; we may easily extend the results to the 
+parameter-dependent case by appropriately updating the parameters in each block after each symmetry 
+application. 
+
+Under the YBE hypothesis, the block operators generate a representation of the
+`Artin braid group <https://en.wikipedia.org/wiki/Braid_group>`_ $\mathcal{B}_n$, which is
+generated by $b_1, \ldots, b_n$ subject to the *braid relations*:
+
+.. math::
+    b_j b_{j+1} b_j = b_{j+1} b_j b_{j+1}, \quad\text{and}\quad b_j b_k = b_k b_j 
+    \text{ whenever } |k - j| > 1.
+
+Incidentally, the topological quantum computation model is also based on unitary representations
+of the braid group :cite:t:`willie_aqc`.
+
+In addition to the braid relations, the block operators satisfy 
+$B_j(\theta)B_j(\theta') = B_j(\theta + \theta')$, which becomes $B_j^2 = B_j$ in the 
+parameter-independent version. 
+
+Therefore, we can state more precisely that the block operators generate a representation of the 
+$0$-Hecke algebra. The 
+`Iwahori-Hecke algebra <https://en.wikipedia.org/wiki/Iwahori–Hecke_algebra>`_ $H_n(q)$ is
+generated by $T_1, \ldots, T_{n-1}$ subject to the braid relations together with the
+quadratic relation
+
+.. math::
+
+    T_j^2 = (q - 1)T_j + q.
+
+Thus if we set $q = 0$ every generator becomes idempotent: $T_j^2 = T_j$. 
+
+The Hecke algebra is well-known and well-studied; it is closely related to the symmetric group and
+it appears in a variety of places.
+
+.. admonition:: Exercise 5.2
+
+    Use Matsumoto's Monoid Lemma or an explicit basis of the (finite-dimensional) $0$-Hecke algebra
+    to prove our compression scheme existence theorem.

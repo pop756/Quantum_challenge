@@ -1,0 +1,489 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="TestSuite: progress reports and de-bugging!" href="test_suite.html" /><link rel="prev" title="Stage 4: Staggered magnetization" href="staggered_magnetization.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
+        <title>Stage 5: (Advanced) YBE-powered compression - YBE-Powered Compression for Trotterization 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">YBE-Powered Compression for Trotterization 1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">YBE-Powered Compression for Trotterization 1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Challenge</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="spin_chains.html">Stage 0: Spin chains 101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schrodinger_dynamics.html">Stage 1: Schrodinger dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="propagators.html">Stage 2: Foundations: the two-particle case</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xyz_evolution.html">Stage 3: Trotterized evolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="staggered_magnetization.html">Stage 4: Staggered magnetization</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Stage 5: (Advanced) YBE-powered compression</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Autograder</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="test_suite.html">TestSuite: progress reports and de-bugging!</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="stage-5-advanced-ybe-powered-compression">
+<h1>Stage 5: (Advanced) YBE-powered compression<a class="headerlink" href="#stage-5-advanced-ybe-powered-compression" title="Permalink to this heading">#</a></h1>
+<p>Finally, we implement the YBE-powered quantum circuit compression scheme
+for the linear-depth Trotterization circuits constructed in Stage 3. Under
+certain conditions on the coupling constants, we will obtain circuits
+whose depth is totally independent of the Trotter number!</p>
+<p>This means we can approximate the time propagator <span class="math notranslate nohighlight">\(U(t)\)</span> to arbitrary accuracy
+without paying <strong>any</strong> cost in terms of added circuit depth. The catch is that
+we must be willing to expend some (classical) computation up front in order to
+find appropriate parameters for the compressed circuit.</p>
+<p>The approximation scheme relies on two circuit identities, known as
+<em>reflection symmetry</em> and <em>merge</em> in <span id="id1">Peng <em>et al.</em> [<a class="reference internal" href="index.html#id12" title="Bo Peng, Sahil Gulania, Yuri Alexeev, and Niranjan Govind. Quantum time dynamics employing the Yang-Baxter equation for circuit compression. Physical Review A, 2022. doi:10.1103/physreva.106.012412.">PGAG22</a>]</span>. The first is a
+YBE; when at least one of the coupling constants is zero, there exist
+parameters <span class="math notranslate nohighlight">\(\theta', \theta''\)</span>, and <span class="math notranslate nohighlight">\(\theta'''\)</span> such that, for instance,</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[B_j(\theta) B_{j+1}(\theta) B_j(\theta)
+= B_{j+1}(\theta') B_j(\theta'') B_{j+1}(\theta'''),\]</div>
+</div>
+<p>for any given initial parameter choice. The figure below illustrates the
+so-called reflection symmetry.</p>
+<figure class="align-center" id="id5">
+<a class="reference internal image-reference" href="_images/reflection_symmetry.png"><img alt="Reflection symmetry identity satisfied by the block operators when $J_x \cdot J_y \cdot J_z = 0$." src="_images/reflection_symmetry.png" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-text">Reflection symmetry identity satisfied by the block operators when <span class="math notranslate nohighlight">\(J_x \cdot J_y \cdot J_z = 0\)</span></span><a class="headerlink" href="#id5" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The so-called <em>merge</em> identity allows for merging two blocks in acting on the
+pair of sites into one; in particular,</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[B_j(\theta) B_j(\theta') = B_j(\theta + \theta')\]</div>
+</div>
+<p>for any <span class="math notranslate nohighlight">\(\theta, \theta' \in \mathbb{R}^3\)</span>.</p>
+<p>When combined, these identities explain the circuit compression scheme. For instance,
+if we consdier <span class="math notranslate nohighlight">\(N = 3\)</span> sites and use <span class="math notranslate nohighlight">\(n = 2\)</span> Trotter steps, we can compress the
+Trotterized circuit as follows:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+    U(t) &amp;\approx \big(B_1(\theta) B_2(\theta) \big)^2 \\
+    &amp;= \big(B_1(\theta) B_2(\theta)\big) \big(B_1(\theta) B_2(\theta)\big) \\
+    &amp;= \big(B_1(\theta) B_2(\theta) B_1(\theta)\big) B_2(\theta) \\
+    &amp;= \big(B_2(\theta') B_1(\theta'') B_2(\theta''')\big) B_2(\theta) \\
+    &amp;= B_2(\theta') B_1(\theta'') B_2(\theta''' + \theta),
+\end{align*}\end{split}\]</div>
+</div>
+<p>The problem is finding the new parameters <span class="math notranslate nohighlight">\(\theta'\)</span>, <span class="math notranslate nohighlight">\(\theta''\)</span>, and <span class="math notranslate nohighlight">\(\theta'''\)</span>.
+For simplicity, we will assume a black-box algorithm for to complete this task:
+simply use the provided <code class="xref py py-meth docutils literal notranslate"><span class="pre">src.circuit_compressor.get_optimized_params()</span></code>
+method.</p>
+<p>The compression scheme can be extended to longer spin chains. For instance,
+the figure below, taken from <span id="id2">Peng <em>et al.</em> [<a class="reference internal" href="index.html#id12" title="Bo Peng, Sahil Gulania, Yuri Alexeev, and Niranjan Govind. Quantum time dynamics employing the Yang-Baxter equation for circuit compression. Physical Review A, 2022. doi:10.1103/physreva.106.012412.">PGAG22</a>]</span>, illustrates how to compose a
+sequence of symmetry reflections to produce the <em>mirror</em> identity that can
+be used to compress circuits with <span class="math notranslate nohighlight">\(N = 4\)</span> qubits.</p>
+<figure class="align-center" id="id6">
+<a class="reference internal image-reference" href="_images/mirror_identity.png"><img alt="A sequence of reflection symmetries on 3 sites used to construct the so-called identity on $N = 4$ qubits." src="_images/mirror_identity.png" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-text">A sequence of reflection symmetries on 3 sites used to construct the so-called identity on <span class="math notranslate nohighlight">\(N = 4\)</span> qubits.</span><a class="headerlink" href="#id6" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The following figure, also taken from <span id="id3">Peng <em>et al.</em> [<a class="reference internal" href="index.html#id12" title="Bo Peng, Sahil Gulania, Yuri Alexeev, and Niranjan Govind. Quantum time dynamics employing the Yang-Baxter equation for circuit compression. Physical Review A, 2022. doi:10.1103/physreva.106.012412.">PGAG22</a>]</span>, illustrates how to combine the
+mirror and merge identities to produce a compression scheme for <span class="math notranslate nohighlight">\(N = 4\)</span> lattice sites.</p>
+<figure class="align-center" id="id7">
+<a class="reference internal image-reference" href="_images/four_site_compression.png"><img alt="Combining the mirror (red braces) and merge identity (black dotted box) to compress a pair of columns in the Trotterized evolution circuit on $N = 4$ sites." src="_images/four_site_compression.png" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-text">Combining the mirror (red braces) and merge identity (black dotted box) to compress a pair of columns in the Trotterized evolution circuit on <span class="math notranslate nohighlight">\(N = 4\)</span> sites.</span><a class="headerlink" href="#id7" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>It turns out that for any number of Trotter steps <span class="math notranslate nohighlight">\(n\)</span>, you can always compress the Trotterized
+evolution circuit on <span class="math notranslate nohighlight">\(N\)</span> sites down to a quantum circuit with just <span class="math notranslate nohighlight">\(N (N-1) / 2\)</span> block operators.
+You can prove this below in the algebraic formulation section.</p>
+<section id="constant-depth-time-evolution-under-certain-heisenberg-hamiltonians">
+<h2>Constant-depth(!) time evolution under certain Heisenberg Hamiltonians<a class="headerlink" href="#constant-depth-time-evolution-under-certain-heisenberg-hamiltonians" title="Permalink to this heading">#</a></h2>
+<p>For the rest of this section, assume <span class="math notranslate nohighlight">\(J_y = h = 0\)</span>, so we will focus on the
+<span class="math notranslate nohighlight">\(H_x + H_z\)</span> Hamiltonian.</p>
+<p>Now implement the YBE-powered compression scheme for <span class="math notranslate nohighlight">\(N = 3, 4\)</span> sites using the
+“moves” illustrated in the figures above. Do this in three steps: first implement
+the <a class="reference internal" href="#src.circuit_compressor.CircuitCompressor.get_ybe_update" title="src.circuit_compressor.CircuitCompressor.get_ybe_update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">CircuitCompressor.get_ybe_update()</span></code></a> method, then the
+<a class="reference internal" href="#src.circuit_compressor.CircuitCompressor.get_mirror_update" title="src.circuit_compressor.CircuitCompressor.get_mirror_update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">CircuitCompressor.get_mirror_update()</span></code></a> method, and finally proceed to the
+<a class="reference internal" href="#src.circuit_compressor.CircuitCompressor.compress_circuit" title="src.circuit_compressor.CircuitCompressor.compress_circuit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">CircuitCompressor.compress_circuit()</span></code></a> method.</p>
+<p><em>Hint</em>: Label the blocks in the circuit and identify which sets of parameters are
+involved in each symmetry application.</p>
+<span class="target" id="module-src.circuit_compressor"></span><dl class="py class">
+<dt class="sig sig-object py" id="src.circuit_compressor.CircuitCompressor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.circuit_compressor.</span></span><span class="sig-name descname"><span class="pre">CircuitCompressor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz_evolution_qc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/circuit_compressor.html#CircuitCompressor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.circuit_compressor.CircuitCompressor" title="Permalink to this definition">#</a></dt>
+<dd><p>A class that implements the YBE-powered QTD circuit compression scheme.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.circuit_compressor.CircuitCompressor.compress_circuit">
+<span class="sig-name descname"><span class="pre">compress_circuit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/circuit_compressor.html#CircuitCompressor.compress_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.circuit_compressor.CircuitCompressor.compress_circuit" title="Permalink to this definition">#</a></dt>
+<dd><p>Compress this time evolution circuit using the YBE.</p>
+<p>OUTPUT:</p>
+<blockquote>
+<div><p>Returns a compressed <a class="reference internal" href="xyz_evolution.html#src.xyz_evolution.XYZEvolutionCircuit" title="src.xyz_evolution.XYZEvolutionCircuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZEvolutionCircuit</span></code></a> object
+with <span class="math notranslate nohighlight">\(N (N - 1)/2\)</span> blocks that is equivalent to the uncompressed
+Trotterization circuit <code class="docutils literal notranslate"><span class="pre">self.deep_qc</span></code>.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.circuit_compressor.CircuitCompressor.get_mirror_update">
+<span class="sig-name descname"><span class="pre">get_mirror_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l2r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/circuit_compressor.html#CircuitCompressor.get_mirror_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.circuit_compressor.CircuitCompressor.get_mirror_update" title="Permalink to this definition">#</a></dt>
+<dd><p>Update the <span class="math notranslate nohighlight">\(4\)</span>-qubit time propagator circuit parameters following the
+so-called mirror step.</p>
+<p>INPUT:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">params</span></code> – a (6, 2) NumPy array describing the parameters for
+each of the six blocks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">l2r</span></code> – a boolean indicating whether we are applying the symmetry
+left-to-right or vice versa</p></li>
+</ul>
+</div></blockquote>
+<p>OUTPUT:</p>
+<blockquote>
+<div><p>A (6, 2) NumPy array describing the parameters of the mirrored circuit.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.circuit_compressor.CircuitCompressor.get_ybe_update">
+<span class="sig-name descname"><span class="pre">get_ybe_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l2r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/circuit_compressor.html#CircuitCompressor.get_ybe_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.circuit_compressor.CircuitCompressor.get_ybe_update" title="Permalink to this definition">#</a></dt>
+<dd><p>Update <span class="math notranslate nohighlight">\(3\)</span>-qubit time propagator circuit parameters according to the
+Yang-Baxter Equation (YBE).</p>
+<p>INPUT:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">params</span></code> – a (3, 2) array describing the parameters for each
+of the three blocks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">l2r</span></code> – a boolean indicating whether we are applying the symmetry
+left-to-right or vice versa</p></li>
+</ul>
+</div></blockquote>
+<p>OUTPUT:</p>
+<blockquote>
+<div><p>A (3, 2) NumPy array describing the parameters of an equivalent circuit.</p>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+<div class="admonition-exercise-5-1 admonition">
+<p class="admonition-title">Exercise 5.1</p>
+<p>Now modify the <code class="docutils literal notranslate"><span class="pre">xyz_evolution_challenge.ipynb</span></code> notebook so it also computes the
+staggered magnetization <span class="math notranslate nohighlight">\(M_{\mathrm{stag}}(t)\)</span> using the compressed circuits for
+<span class="math notranslate nohighlight">\(N = 3\)</span> and <span class="math notranslate nohighlight">\(N = 4\)</span> sites. Comment on your results and include your plots showing
+four magnetization curves on the same set of axes for each <span class="math notranslate nohighlight">\(N\)</span>.</p>
+</div>
+<div class="admonition-challenge admonition">
+<p class="admonition-title">Challenge!</p>
+<p>Use the reflection symmetry and the merge identity to design and implement a compression
+scheme for circuits on <span class="math notranslate nohighlight">\(N &gt; 4\)</span> lattice sites. Report the complexity of your algorithm
+as the number of reflection symmetries required.</p>
+</div>
+</section>
+<section id="expert-algebraic-formulation">
+<h2>(Expert) Algebraic formulation<a class="headerlink" href="#expert-algebraic-formulation" title="Permalink to this heading">#</a></h2>
+<p>To conclude, we prove the following theorem:</p>
+<blockquote>
+<div><p>Suppose the block operators <span class="math notranslate nohighlight">\(B_j\)</span> satisfy the YBE. Then any Trotterized evolution
+circuit constructed considered here, using any number of block operators, may be
+expressed as an <strong>equivalent</strong> circuit with depth at most <span class="math notranslate nohighlight">\(N\)</span> and using at most
+<span class="math notranslate nohighlight">\(N(N-1)/2\)</span> blocks.</p>
+</div></blockquote>
+<p>We consider a parameter-independent version of the block operators by simply forgetting they
+are parametrized. However, we do not lose generality; we may easily extend the results to the
+parameter-dependent case by appropriately updating the parameters in each block after each symmetry
+application.</p>
+<p>Under the YBE hypothesis, the block operators generate a representation of the
+<a class="reference external" href="https://en.wikipedia.org/wiki/Braid_group">Artin braid group</a> <span class="math notranslate nohighlight">\(\mathcal{B}_n\)</span>, which is
+generated by <span class="math notranslate nohighlight">\(b_1, \ldots, b_n\)</span> subject to the <em>braid relations</em>:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[b_j b_{j+1} b_j = b_{j+1} b_j b_{j+1}, \quad\text{and}\quad b_j b_k = b_k b_j
+\text{ whenever } |k - j| &gt; 1.\]</div>
+</div>
+<p>Incidentally, the topological quantum computation model is also based on unitary representations
+of the braid group <span id="id4">Aboumrad [<a class="reference internal" href="index.html#id17" title="Willie Aboumrad. Quantum computing with anyons: an $F$-matrix and braid calculator. 2022. URL: https://arxiv.org/abs/2212.00831, doi:10.48550/ARXIV.2212.00831.">Abo22</a>]</span>.</p>
+<p>In addition to the braid relations, the block operators satisfy
+<span class="math notranslate nohighlight">\(B_j(\theta)B_j(\theta') = B_j(\theta + \theta')\)</span>, which becomes <span class="math notranslate nohighlight">\(B_j^2 = B_j\)</span> in the
+parameter-independent version.</p>
+<p>Therefore, we can state more precisely that the block operators generate a representation of the
+<span class="math notranslate nohighlight">\(0\)</span>-Hecke algebra. The
+<a class="reference external" href="https://en.wikipedia.org/wiki/Iwahori–Hecke_algebra">Iwahori-Hecke algebra</a> <span class="math notranslate nohighlight">\(H_n(q)\)</span> is
+generated by <span class="math notranslate nohighlight">\(T_1, \ldots, T_{n-1}\)</span> subject to the braid relations together with the
+quadratic relation</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[T_j^2 = (q - 1)T_j + q.\]</div>
+</div>
+<p>Thus if we set <span class="math notranslate nohighlight">\(q = 0\)</span> every generator becomes idempotent: <span class="math notranslate nohighlight">\(T_j^2 = T_j\)</span>.</p>
+<p>The Hecke algebra is well-known and well-studied; it is closely related to the symmetric group and
+it appears in a variety of places.</p>
+<div class="admonition-exercise-5-2 admonition">
+<p class="admonition-title">Exercise 5.2</p>
+<p>Use Matsumoto’s Monoid Lemma or an explicit basis of the (finite-dimensional) <span class="math notranslate nohighlight">\(0\)</span>-Hecke algebra
+to prove our compression scheme existence theorem.</p>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="test_suite.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">TestSuite: progress reports and de-bugging!</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="staggered_magnetization.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Stage 4: Staggered magnetization</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Willie Aboumrad, IonQ
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Stage 5: (Advanced) YBE-powered compression</a><ul>
+<li><a class="reference internal" href="#constant-depth-time-evolution-under-certain-heisenberg-hamiltonians">Constant-depth(!) time evolution under certain Heisenberg Hamiltonians</a><ul>
+<li><a class="reference internal" href="#src.circuit_compressor.CircuitCompressor"><code class="docutils literal notranslate"><span class="pre">CircuitCompressor</span></code></a><ul>
+<li><a class="reference internal" href="#src.circuit_compressor.CircuitCompressor.compress_circuit"><code class="docutils literal notranslate"><span class="pre">CircuitCompressor.compress_circuit()</span></code></a></li>
+<li><a class="reference internal" href="#src.circuit_compressor.CircuitCompressor.get_mirror_update"><code class="docutils literal notranslate"><span class="pre">CircuitCompressor.get_mirror_update()</span></code></a></li>
+<li><a class="reference internal" href="#src.circuit_compressor.CircuitCompressor.get_ybe_update"><code class="docutils literal notranslate"><span class="pre">CircuitCompressor.get_ybe_update()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#expert-algebraic-formulation">(Expert) Algebraic formulation</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=359c27e9"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]]}})</script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]]}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

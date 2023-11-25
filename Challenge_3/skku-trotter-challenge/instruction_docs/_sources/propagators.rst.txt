@@ -1,0 +1,88 @@
+Stage 2: Foundations: the two-particle case
+===========================================
+
+For starters, we focus on the $N = 2$ case with two lattice sites. Our work here
+motivates the derivation in the next phase. When $N = 2$, the spin interaction
+Hamiltonian becomes
+
+.. math::
+    
+    \mathcal{H}_S = \frac{1}{2} \left(
+    J_x \sigma_0^x \sigma_1^x
+    + J_y \sigma_0^y \sigma_1^y
+    + J_z \sigma_0^z \sigma_1^z
+    \right)
+
+Here we have labeled the relevant spins by $0$ and $1$, for consistency with
+Python and Qiskit.
+
+We will refer to the two-qubit time propagator $U(t) = e^{-i \mathcal{H}_S t}$
+as the *block operator* $B(\theta)$, with 
+$\theta = \frac{t}{2} \begin{bmatrix} J_x & J_y & J_z \end{bmatrix}^T$. Explicitly,
+
+.. math:: 
+    
+    B(\theta) = 
+    \prod_\alpha e^{-it J_\alpha \sigma_0^\alpha \sigma_1^\alpha} = 
+    \begin{bmatrix}
+    e^{-i \theta_z} \cos(\gamma) & 0  & 0 & -e^{-i \theta_z} \sin(\gamma) \\
+    0 & e^{i \theta_z} \cos(\delta) & -e^{i\theta_z} \sin(\delta) & 0 \\
+    0 & -ie^{i \theta_z} \sin(\delta) & e^{i\theta_z} \cos(\delta) & 0 \\
+    -ie^{-i \theta_z} \sin(\gamma) & 0  & 0 & e^{-i \theta_z} \cos(\gamma) 
+    \end{bmatrix},
+
+with $\delta = \theta_x + \theta_y$ and $\gamma = \theta_x - \theta_y$.
+
+Time propagation blocks
+-----------------------
+
+The good news is that each $4 \times 4$ block operator can be efficiently 
+implemented on a quantum computer using a two-qubit circuit with at most $3$
+CNOT gates :cite:t:`peng`. In particular, we use the following circuit for the
+general XYZ case.
+
+.. image:: _static/xyz_propagator_dark.png
+    :class: only-dark
+    :align: center
+    :width: 700
+    :alt: The two-qubit general XYZ propagator
+
+.. image:: _static/xyz_propagator_light.png
+    :class: only-light
+    :align: center
+    :width: 700
+    :alt: The two-qubit general XYZ propagator
+
+The case $J_x \cdot J_y \cdot J_z = 0$, where at least one of the coupling
+constants is zero, will be important later. Thus we consider it separately,
+and note that in this case there is an optimized quantum circuit that only
+requires $2$ CNOT gates :cite:t:`peng`. In particular, if $J_y = 0$, the
+following circuit implements time propagation under
+
+.. math::
+
+    H_x + H_z = \frac{J_x}{2}\sigma_0^x \sigma_1^x 
+    + \frac{J_z}{2} \sigma_0^z \sigma_1^z.
+
+.. image:: _static/xz_propagator_dark.png
+    :class: only-dark
+    :align: center
+    :width: 400
+    :alt: The two-qubit general XYZ propagator
+
+.. image:: _static/xz_propagator_light.png
+    :class: only-light
+    :align: center
+    :width: 400
+    :alt: The two-qubit general XYZ propagator
+
+Begin by implementing these optimized $2$-qubit circuits, corresponding to the
+block operators on a pair of sites. In particular, implement the 
+:class:`.UXYZGate` and :class:`.UXZGate` constructors defined in 
+``src/propagators.py``. Be sure to test your implementation using
+:meth:`.XYZEvolutionTestSuite.test_uxyz` and 
+:meth:`.XYZEvolutionTestSuite.test_uxz`.
+
+.. automodule:: src.propagators
+    :members:
+    :show-inheritance:

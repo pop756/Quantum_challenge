@@ -1,0 +1,11 @@
+TestSuite: progress reports and de-bugging! 
+===========================================
+
+Use the test suite below to check your progress. You may also use these
+tests to debug your implementations as you go!
+
+We'll use the test suite as an autograder for the challenge.
+
+.. automodule:: src.xyz_evolution_test
+    :members:
+    :show-inheritance:

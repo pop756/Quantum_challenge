@@ -1,0 +1,93 @@
+Stage 1: Schrodinger dynamics
+=============================
+
+Spin chain QTD
+--------------
+
+Together with the Hamiltonian, the Schrodinger equation describes the QTD 
+of the spin chain; in particular, the evolution of the state-vector is governed
+by the partial differential equation
+
+.. math::
+   
+   i \hbar \frac{\partial}{\partial t} \vert \psi(t) \rangle = \mathcal{H} \vert \psi(t) \rangle.
+
+.. NOTE::
+
+   Here $\hbar$ denotes the reduced Planck constant, **not** to be confused with
+   the external magnetic field strength $h$ defining the Heisenberg Hamiltonian
+   $\mathcal{H}$.
+
+We can solve the last equation using the *matrix exponential*:
+
+.. math::
+
+   \vert \psi(t) \rangle = e^{-i \mathcal{H} t / \hbar} \vert \psi_0 \rangle,
+
+
+where $\vert \psi(t=0) \rangle = \vert \psi_0 \rangle$ denotes the system's
+initial state. The unitary operator $U(t) = e^{-i H t / \hbar}$ is known as a
+*time propagator*. For simplicity, we will work in the so-called *natural units*,
+which means we take $\hbar = 1$.
+
+Let the games begin!
+--------------------
+
+Your task will be to simulate the spin-chain's state-vector 
+$\vert \psi(t) \rangle$ at various time points. Essentially, we need to evaluate
+the time propagator
+
+.. math::
+   
+   U(t) = e^{-i \mathcal{H} t}.
+
+The complication is that the associated computational cost quickly becomes 
+prohibitive, even for modest system sizes. To see this, recall that the matrix 
+exponential is defined via a Taylor series:
+
+.. math::
+   :name: exp_def
+
+   e^A = \sum_{k = 0}^{\infty} \frac{A^k}{k!}
+
+for any square matrix $A$.
+
+.. admonition:: Exercise 1.1
+
+   Suppose $A$ is a complex $m \times m$ matrix. In addition, suppose that for
+   each $t \geq 0$, $z(t)$ is a complex $m$-vector. Use the defining series in
+   :ref:`Relation (1) <exp_def>` to show that $z(t) = e^{t A} z(0)$ is a 
+   solution to
+
+   .. math::
+
+      z'(t) = A z(t).
+
+Thus if $A$ is $m \times m$, then in general we need
+$O(m^3)$ floating point operations (flops) to compute $A^2$. Therefore we'd
+need $O(K m^3)$ to **approximate** $e^A$ using the first $K$ terms in its
+defining series. Since our $n$-particle system Hamiltonian is an operator on the
+state space 
+$\left(\mathbb{C}^2\right)^{\otimes N}$, it is represented by a $2^N \times 2^N$
+matrix. This means that even for $N = 20$ sites and $K = 1000$ terms, we would 
+need at least $K m^3 = 1000 \cdot (2^{20})^3 \approx 2^{70} > 10^{20}$
+flops to approximate our time propagator $U(t) = e^{- i \mathcal{H} t}$ at a 
+single time point! This is exa-scale computing and it can only be achieved on
+the world's largest supercomputers.
+
+The above analysis should **not** suggest that truncating the series defining 
+the exponential is the leading way of numerically computing the matrix 
+exponential in practice; rather, it provides a simple and concrete lower bound 
+on performance. Really one would probably leverage a differential equation 
+solver to obtain the vector 
+$\vert \psi(t) \rangle = e^{-i \mathcal{H} t} \vert \psi_0 \rangle$
+directly, or a matrix factorization like the spectral decomposition to compute
+$\vert \psi(t) \rangle$ with high accuracy at various time points. In the first
+case, the computational cost is $O(m^2)$ times a polynomial in $t$ and the 
+error compounds over time, with $m = 2^N$; in the second, we pay $O(m^3)$ up
+front to compute the factorization but then we only need $O(m^2)$ operations to 
+evaluate $\vert \psi(t) \rangle$ at each time point. See :cite:t:`moler_vanloan`
+for details.
+
+We will use a quantum computer to implement the time propagator efficiently. The
+following phases will guide you through it.

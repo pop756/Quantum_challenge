@@ -1,0 +1,163 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[letterpaper]{geometry}
+\usepackage{graphicx}
+
+% \usepackage{fancyhdr}
+\usepackage{color}
+\usepackage{ifthen}
+\usepackage{amsmath,amsbsy,amssymb,bm}
+\usepackage{mathbbol,mathtools}
+
+% Environment for problem solution
+\newboolean{showsolutions}
+% Set showsolutions to 'true' or 'false'
+\setboolean{showsolutions}{true}
+
+% Use environment \begin{solution}...\end{solution} if solution has multiple lines
+\newenvironment{solution}
+{
+	\ifthenelse{\boolean{showsolutions}}
+	{\color{blue}\par\smallskip\underline{\textbf{Solution}}\par\medskip}
+	{\expandafter\comment}
+}
+{
+	\ifthenelse{\boolean{showsolutions}}
+	{}
+	{\expandafter\endcomment}
+}
+
+
+\begin{document} \pagestyle{empty}
+\begin{minipage}[t]{0.6\linewidth}
+		{\small\it IonQ-SKKU Challenge\\
+			Your name here \\
+			Fall 2023}
+	\end{minipage}
+	\hfill
+	\bigskip\bigskip
+	
+	\begin{center}
+		\textbf{Problem Set 1
+			\ifthenelse{\boolean{showsolutions}}
+			{\color{blue}{-- Solution}}{}
+		}
+		
+		\medskip
+	\end{center}
+	\medskip
+	
+\begin{enumerate}
+	\item \textit{(Spin chains 101.)} Show that the spin interaction terms acting on a common pair of sites along
+   different axes commute. Concretely, let 
+   $$[A, B] = AB - BA$$
+   denote the \textit{commutator} of $A$ and $B$, let 
+   $S_j^\alpha = \sigma_j^\alpha \sigma_{j+1}^\alpha$ denote the spin-spin
+   interaction term at the $(j, j+1)$-st sites along the $\alpha$ direction, 
+   and show that
+    \begin{equation*}
+        [S_j^\alpha, S_j^\beta] = 0.
+    \end{equation*}
+   Now show that, conversely, spin interaction terms at adjacent pairs of sites 
+   do \textbf{not} commute; that is, prove that
+    \begin{equation*}
+        [S_j^\alpha, S_{j+1}^\beta] \neq 0.
+    \end{equation*}
+
+    \begin{solution}
+        [S_j^\alpha, S_j^\beta] = $\sigma_j^\alpha \sigma_{j+1}^\alphasigma_j^\alpha \beta_{j+1}^\beta$
+    \end{solution}
+
+    \item \textit{(Schrodinger dynamics.)} Suppose $A$ is a complex $m \times m$ matrix. In addition, suppose that for
+   each $t \geq 0$, $z(t)$ is a complex $m$-vector. Use the defining series for the matrix exponential to show that $z(t) = e^{t A} z(0)$ is a solution to
+    \begin{equation*}
+        z'(t) = A z(t).
+    \end{equation*}
+
+    \begin{solution}
+        Fill this in!
+    \end{solution}
+\end{enumerate}
+\begin{enumerate}
+\setcounter{enumi}{2}
+    \item \textit{(Foundations: $N = 2$ case.)} 
+    \begin{enumerate}
+        \item Use the binomial theorem to show that if $A$ and $B$ are commuting $m \times m$ matrices then 
+        \begin{equation*}
+            e^A e^B = e^{A + B}.
+        \end{equation*}
+
+    In addition, show that this generally fails if $A$ and $B$ do \textbf{not} commute; that is, find two matrices $A$, $B$ such that $[A, B] \neq 0$ and
+    \begin{equation*}
+        e^A e^B \neq e^{A + B}.
+    \end{equation*}
+    
+    \begin{solution}
+        Fill this in!
+    \end{solution}
+
+    \item Write $\mathcal{H}_S = \mathcal{H}_{\mathrm{even}} + \mathcal{H}_{\mathrm{odd}}$
+    as a sum of even- and odd-indexed spin interaction terms. 
+
+    Briefly explain why the summands in $H_{\mathrm{even}}$ ($H_{\mathrm{odd}}$)
+    pairwise commute; in other words, justify the following equalities:
+    \begin{equation*}
+        e^{-it \mathcal{H}_{\mathrm{even}}} = \prod_j B_{2j}(\theta)
+        \quad\text{and similarly}\quad
+        e^{-it H_{\mathrm{odd}}} = \prod_j B_{2j-1}(\theta),
+    \end{equation*}
+    with $B_j$ acting as the block operator on the $(j, j+1)$-st sites.
+
+    \begin{solution}
+        Fill this in!
+    \end{solution}
+
+    \item What is the depth of the circuit illustrated above? Compare this to the depth of the circuit that directly Trotterizes
+    \begin{equation*}
+        U(t) \approx \left( \prod_j B_j(\theta/n) \right)^n.
+    \end{equation*}
+
+    \begin{solution}
+        Fill this in!
+    \end{solution}
+    \end{enumerate}
+
+    \item \textit{(Staggered magnetization.)} Suppose $\mathcal{O}$ is a Hermitian observable whose matrix with respect
+    to the computational basis is diagonal. Let $\lambda_x$ denote the 
+    eigenvalue of $\mathcal{O}$ corresponding to the computational basis state
+    $\vert x \rangle$. Let
+    $\vert \psi \rangle = \sum_x \alpha_x \vert x \rangle$ denote any quantum
+    state, written as a superposition over the computational basis, and let
+    $p_x = \vert \alpha_x \vert^2$ denote the probability of observing
+    $\vert \psi \rangle$ in the state $\vert x \rangle$.
+    
+    Show that the expectation value
+    \begin{equation*}
+        \langle \psi \vert\, \mathcal{O} \,\vert \psi \rangle =
+        \sum_{x} p_x \lambda_x
+    \end{equation*}
+    is simply a weighted average of the eigenvalues of $\mathcal{O}$.
+
+    \begin{solution}
+        Fill this in!
+    \end{solution}
+
+    \item \textit{(YBE-powered compression.)} 
+    \begin{enumerate}
+        \item Comment on your results and include your plots showing four magnetization curves on the same set of axes for each $N$.
+    
+    \begin{solution}
+        Fill this in!
+    \end{solution}
+
+    \item Use Matsumoto's Monoid Lemma or an explicit basis of the (finite-dimensional) $0$-Hecke algebra
+    to prove our compression scheme existence theorem.
+
+    \begin{solution}
+        Fill this in!
+    \end{solution}
+    
+    \end{enumerate}
+\end{enumerate}
+\end{document}
+
