@@ -1,11 +1,9 @@
+from qiskit import QuantumCircuit
 import numpy as np
-
 from math import ceil
 from qiskit import QuantumCircuit
 from qiskit.circuit import ParameterVector
 from src.propagators import UXZGate, UXYZGate
-
-
 class XYZEvolutionCircuit(QuantumCircuit):
     """
     A ``QuantumCircuit`` that implements time propagation under the action
@@ -125,7 +123,59 @@ class XYZEvolutionCircuit(QuantumCircuit):
             params = [ParameterVector("θ" + str(k), num_block_params) for k in range(num_blocks)]
 
         # Lay down blocks one step at a time!
-        
-        if self.magnetic == 0:
-            for para in params:
-                self.block(para)
+        if not(odd):
+            if self.magnetic == 0:
+                for index,para in enumerate(params):
+                    index = index%(self.num_qubits-1)
+                    if index<int(self.num_qubits/2):
+                        block(*para,2*index,2*index+1)
+                    else:
+                        index = index-int(self.num_qubits/2)
+                        try:
+                            block(*para,2*index+1,2*index+2)
+                        except:
+                            continue
+            else:
+                for index,para in enumerate(params):
+                    index = index%(self.num_qubits-1)
+                    if index == 0:
+                        for i in range(self.num_qubits):
+                            if i == 0:
+                                self.barrier(self.qubits)
+                            self.rz(self.time_delta*self.magnetic,i)
+                            if i == self.num_qubits-1:
+                                self.barrier(self.qubits)
+                                
+                    if index<int(self.num_qubits/2):
+                        block(*para,2*index,2*index+1)
+                    else:
+                        index = index-int(self.num_qubits/2)
+                        block(*para,2*index+1,2*index+2)
+        else:
+            if self.magnetic == 0:
+                for index,para in enumerate(params):
+                    index = index%(self.num_qubits-1)
+                    if index<ceil(self.num_qubits/2-1):
+                        block(*para,2*index+1,2*index+2)
+                    else:
+                        index = index-int(self.num_qubits/2)
+                        try:
+                            block(*para,2*index,2*index+1)
+                        except:
+                            continue
+            else:
+                for index,para in enumerate(params):
+                    index = index%(self.num_qubits-1)
+                    if index == 0:
+                        for i in range(self.num_qubits):
+                            if i == 0:
+                                self.barrier(self.qubits)
+                            self.rz(self.time_delta*self.magnetic,i)
+                            if i == self.num_qubits-1:
+                                self.barrier(self.qubits)
+                                
+                    if index<ceil(self.num_qubits/2-1):
+                        block(*para,2*index+1,2*index+2)
+                    else:
+                        index = index-int(self.num_qubits/2)
+                        block(*para,2*index,2*index+1)

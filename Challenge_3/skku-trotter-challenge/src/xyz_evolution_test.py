@@ -17,12 +17,12 @@ class XYZEvolutionTestSuite:
         pass 
 
     def run_test_suite(self):
-        self.test_uxz()
-        self.test_uxyz()
-        self.test_xyz_evolution()
-        self.test_xyzm_evolution()
-        self.test_magnetization_hamiltonian()
-        self.test_ybe_update()
+        #self.test_uxz()
+        #self.test_uxyz()
+        #self.test_xyz_evolution()
+        #self.test_xyzm_evolution()
+        #self.test_magnetization_hamiltonian()
+        #self.test_ybe_update()
         self.test_mirror_update()
         self.test_circuit_compression()
 

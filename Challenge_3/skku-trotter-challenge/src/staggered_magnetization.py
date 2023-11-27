@@ -3,6 +3,10 @@ import numpy as np
 from qiskit.quantum_info import SparsePauliOp
 
 
+import numpy as np
+from qiskit.quantum_info import SparsePauliOp
+
+
 class StaggeredMagnetization:
     r"""
     Calculator for the time-dependent staggered magnetization of a spin
@@ -61,10 +65,8 @@ class StaggeredMagnetization:
         """
         paulis = np.array([list(str(ops)) for ops in self.hamiltonian.paulis]) != "I"
         coeffs = self.hamiltonian.coeffs.real
-        energies = [0]*len(states)
-        
-        #####################
-        ### Fill this in! ###
-        #####################
-
+        temp = np.matmul(states,paulis)
+        temp = np.where(temp==1,-1,temp)
+        temp = np.where(temp==0,1,temp)
+        energies = np.sum(coeffs*temp,axis=1)
         return energies

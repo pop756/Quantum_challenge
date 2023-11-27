@@ -5,7 +5,16 @@ from copy import deepcopy
 from qiskit.quantum_info import Operator
 from scipy.optimize import minimize
 from src.xyz_evolution import XYZEvolutionCircuit
+from qiskit.circuit import ParameterVector
 
+import numpy as np
+import random as rnd
+
+from copy import deepcopy
+from qiskit.quantum_info import Operator
+from scipy.optimize import minimize
+from src.xyz_evolution import XYZEvolutionCircuit
+from qiskit.circuit import ParameterVector
 
 class CircuitCompressor:
     """
@@ -31,25 +40,69 @@ class CircuitCompressor:
 
             A (3, 2) NumPy array describing the parameters of an equivalent circuit. 
         """
-        # Get equivalent parametrized circuit
-        equiv_qc = XYZEvolutionCircuit(3)
-        
-        #####################
-        ### Fill this in! ###
-        #####################
+        if l2r:
+            # Get equivalent parametrized circuit
+            equiv_qc = XYZEvolutionCircuit(3)
+            params = np.reshape(params,[3,2])
+            result_params = [ParameterVector('theta'+str(k),2) for k in range(3)]
+            for index,param in enumerate(result_params):
+                index = index%(equiv_qc.num_qubits-1)
+                if index<int(equiv_qc.num_qubits/2):
+                    equiv_qc.uxz(*param, 2*index, 2*index + 1)
+                else:
+                    index = index - int(equiv_qc.num_qubits/2)
+                    equiv_qc.uxz(*param, 2*index+1, 2*index + 2)
 
-        # Construct target unitary operator
-        target_qc = XYZEvolutionCircuit(3)
-        
-        #####################
-        ### Fill this in! ###
-        #####################
 
-        target = Operator(target_qc).data
+            # Construct target unitary operator
+            target_qc = XYZEvolutionCircuit(3)
+            
+            for index,param in enumerate(params):
+                index = index%(target_qc.num_qubits-1)
+                if index<int(target_qc.num_qubits/2-1):
+                    target_qc.uxz(*param, 2*index+1, 2*index + 2)
+                else:
+                    index = index - int(equiv_qc.num_qubits/2)
+                    target_qc.uxz(*param, 2*index, 2*index +1)
 
-        # Get parameters for the equivalent time propagator
-        new_params = get_optimized_params(equiv_qc, target)
-        return new_params
+            target = Operator(target_qc).data
+
+            # Get parameters for the equivalent time propagator
+            new_params = get_optimized_params(equiv_qc, target)
+            #new_params = np.reshape(new_params,[3,2])
+            return new_params
+        else:
+            # Get equivalent parametrized circuit
+            equiv_qc = XYZEvolutionCircuit(3)
+            params = np.reshape(params,[3,2])
+            result_params = [ParameterVector('theta'+str(k),2) for k in range(3)]
+            for index,param in enumerate(result_params):
+                index = index%(equiv_qc.num_qubits-1)
+                if index<int(equiv_qc.num_qubits/2):
+                    equiv_qc.uxz(*param, 2*index+1, 2*index + 2)
+                else:
+                    index = index - int(equiv_qc.num_qubits/2)
+                    equiv_qc.uxz(*param, 2*index, 2*index + 1)
+
+
+            # Construct target unitary operator
+            target_qc = XYZEvolutionCircuit(3)
+            
+            for index,param in enumerate(params):
+                index = index%(target_qc.num_qubits-1)
+                if index<int(target_qc.num_qubits/2):
+                    target_qc.uxz(*param, 2*index, 2*index + 1)
+                else:
+                    index = index - int(equiv_qc.num_qubits/2)
+                    target_qc.uxz(*param, 2*index+1, 2*index +2)
+
+            target = Operator(target_qc).data
+
+            # Get parameters for the equivalent time propagator
+            new_params = get_optimized_params(equiv_qc, target)
+            #new_params = np.reshape(new_params,[3,2])
+            return new_params
+            
 
     def get_mirror_update(self, params, l2r=True):
         r"""
@@ -69,12 +122,37 @@ class CircuitCompressor:
         """
         # Number of parameters per block
         bsz = 2
+        params = np.reshape(params,[6,2])
+        equiv_qc = XYZEvolutionCircuit(4)
         
-        #####################
-        ### Fill this in! ###
-        #####################
+        result_params = [ParameterVector('theta'+str(k),bsz) for k in range(6)]
+        for index,param in enumerate(result_params):
+            index = index%(equiv_qc.num_qubits-1)
+            if index<int(equiv_qc.num_qubits/2):
+                equiv_qc.uxz(*param, 2*index, 2*index + 1)
+            else:
+                index = index - int(equiv_qc.num_qubits/2)
+                equiv_qc.uxz(*param, 2*index+1, 2*index + 2)
 
-        return params
+
+        # Construct target unitary operator
+        target_qc = XYZEvolutionCircuit(4)
+        
+        for index,param in enumerate(params):
+            index = index%( target_qc.num_qubits-1)
+            if index<int(target_qc.num_qubits/2-1):
+                target_qc.uxz(*param, 2*index+1, 2*index + 2)
+            else:
+                index = index - int(target_qc.num_qubits/2)
+                target_qc.uxz(*param, 2*index, 2*index +1)
+
+        target = Operator(target_qc).data
+
+        # Get parameters for the equivalent time propagator
+        new_params = get_optimized_params(equiv_qc, target)
+        
+        return new_params
+
 
     def compress_circuit(self):
         """
@@ -131,3 +209,4 @@ def get_optimized_params(param_circ, target_unitary, res_tol=1e-7, max_shots=10,
     if verbose:
         print("WARNING: Good fitting parameters were not found! Residual loss is {}".format(min_loss))
     return w_opt
+

@@ -65,7 +65,29 @@
     \end{equation*}
 
     \begin{solution}
-        [S_j^\alpha, S_j^\beta] = $\sigma_j^\alpha \sigma_{j+1}^\alphasigma_j^\alpha \beta_{j+1}^\beta$
+    1. [$S_j^\alpha, S_j^\beta$] = 0
+
+        ${\sigma_j^\alpha, \sigma_j^\beta} = 0$, they are anti commute which means
+        
+        $\sigma_j^\alpha \sigma_j^\beta + \sigma_j^\beta \sigma_j^\alpha = 0$
+        
+        $\sigma_j^\alpha \sigma_j^\beta  = -\sigma_j^\beta \sigma_j^\alpha$
+        
+        So when we change the sequence, -1 is multiplied to the value. and beacuse that sequnce is twice,
+        $-1 \times -1 = 1$ that means,
+
+        $\sigma_j^\alpha \sigma_{j+1}^\alpha \sigma_j^\beta \sigma_{j+1}^\beta  = \sigma_j^\beta \sigma_{j+1}^\beta \sigma_j^\alpha \sigma_{j+1}^\alpha$
+     \end{solution}
+            
+    \begin{solution}        
+    2. $[S_j^\alpha, S_{j+1}^\beta] \neq 0$
+    
+    In this case, interaction is only occur in the j+1 term. So the result is anti commute which means,
+    
+    $\sigma_j^\alpha \sigma_{j+1}^\alpha \sigma_{j+1}^\beta \sigma_{j+2}^\beta  = -\sigma_{j+1}^\beta \sigma_{j+2}^\beta \sigma_j^\alpha \sigma_{j+1}^\alpha$
+
+            
+        
     \end{solution}
 
     \item \textit{(Schrodinger dynamics.)} Suppose $A$ is a complex $m \times m$ matrix. In addition, suppose that for
@@ -75,7 +97,13 @@
     \end{equation*}
 
     \begin{solution}
-        Fill this in!
+        $z(t) = e^{A t} z(0) = {\sum\limits_{k=1}^{\inf} \frac{(At)^{k}}{k!} z(0)}$
+
+        $z'(t) = {\sum\limits_{k=1}^{\inf} k \frac{A^k t^{k-1}}{k!} z(0)}$
+
+        $z'(t) = A {\sum\limits_{k=1}^{\inf}  \frac{A^{k-1} t^{k-1}}{(k-1)!} z(0)} = A e^{tA}z(0) = A z(t)$ 
+
+        
     \end{solution}
 \end{enumerate}
 \begin{enumerate}
@@ -93,7 +121,19 @@
     \end{equation*}
     
     \begin{solution}
-        Fill this in!
+        1. $A^nB = A^{n-1}BA = A^{n-2}BA^2 ... = B A^n$
+        
+        Right equation = ${\sum\limits_{k=0}^{\inf}  {\sum\limits_{l=0}^{k} \frac{B^l A^{k-l}}{l!(k-l)!}}}$
+
+        for given number l : ${\sum\limits_{k=l}^{\inf} \frac{B^l}{l!}} \frac{A^{k-l}}{(k-l)!}$ = $\frac{B^l}{l!}{\sum\limits_{k=0}^{\inf} \frac{A^k}{k!}}$
+
+        So $l=0$ to $\inf$ , = ${\sum\limits_{l=0}^{\inf} \frac{B^l}{l!}} {\sum\limits_{k=0}^{\inf}\frac{A^{k}}{k!}}$
+
+        2. $A = i\pi/2 X, B =i\pi/2 Z$ ($X$ $Z$ is Pauli gate, Not consider glober phase)
+        $e^{i \pi/2 X} = -iX$, $e^{i \pi/2 Z} = -iZ$
+        $XZ = Y = e^{i \pi/2 Y} \neq e^{i \pi/2 (X+Z)}$ 
+        
+        
     \end{solution}
 
     \item Write $\mathcal{H}_S = \mathcal{H}_{\mathrm{even}} + \mathcal{H}_{\mathrm{odd}}$
@@ -109,7 +149,7 @@
     with $B_j$ acting as the block operator on the $(j, j+1)$-st sites.
 
     \begin{solution}
-        Fill this in!
+        Because $(2j,2j+1)$ and $(2j+2,2j+3)$ is not interact in Hamiltonian(they only interact with adjacent part), the interaction between odd(even) part is independent. So because of this reason, if their sequence reversed, this can preserve the result.
     \end{solution}
 
     \item What is the depth of the circuit illustrated above? Compare this to the depth of the circuit that directly Trotterizes
@@ -118,7 +158,11 @@
     \end{equation*}
 
     \begin{solution}
-        Fill this in!
+        ($N$: number of node)
+        
+        Each step have two interaction that is occur between odd side and even side. So each step, depth is 2. But in direct Trotterizes, interaction occur in all of $N$ blocks. This makes depth more bigger that is $N$ each step.
+
+        Result is $2n$(odd,even) and $Nn$(direct)
     \end{solution}
     \end{enumerate}
 
@@ -139,7 +183,10 @@
     is simply a weighted average of the eigenvalues of $\mathcal{O}$.
 
     \begin{solution}
-        Fill this in!
+        $\mathcal{O} \,\vert \psi \rangle = {\sum\limits_x \mathcal{O} \,\alpha_x \vert x \rangle } = {\sum\limits_x \lambda_x \alpha_x \vert x \rangle} $  
+
+        So, $\langle \psi \vert\, \mathcal{O} \,\vert \psi \rangle = {\sum\limits_x \langle x \vert \alpha_x^* \lambda_x \alpha_x \vert x \rangle} =  {\sum\limits_x p_x \lambda_x}$
+        
     \end{solution}
 
     \item \textit{(YBE-powered compression.)} 
@@ -160,4 +207,5 @@
     \end{enumerate}
 \end{enumerate}
 \end{document}
+
 

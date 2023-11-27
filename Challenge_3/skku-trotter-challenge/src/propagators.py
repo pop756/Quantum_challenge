@@ -67,9 +67,9 @@ class UXYZGate(QuantumCircuit):
         self.h(0)
         self.cnot(0,1)
         self.s(0)
-        self.rz(-1.*thetay)
+        self.rz(-1.*thetay,1)
         self.h(0)
         self.cnot(0,1)
-        self.rx(0,-np.pi/2)
-        self.rx(1,np.pi/2)
+        self.rx(-np.pi/2,0)
+        self.rx(np.pi/2,1)
 
