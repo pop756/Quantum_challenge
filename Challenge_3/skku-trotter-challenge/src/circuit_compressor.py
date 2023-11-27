@@ -1,12 +1,11 @@
 import numpy as np
 import random as rnd
-
 from copy import deepcopy
 from qiskit.quantum_info import Operator
 from scipy.optimize import minimize
 from src.xyz_evolution import XYZEvolutionCircuit
 from qiskit.circuit import ParameterVector
-
+from math import ceil
 import numpy as np
 import random as rnd
 
@@ -112,41 +111,32 @@ class CircuitCompressor:
         INPUT:
 
             - ``params`` -- a (6, 2) NumPy array describing the parameters for
-              each of the six blocks
+            each of the six blocks
             - ``l2r`` -- a boolean indicating whether we are applying the symmetry
-              left-to-right or vice versa
+            left-to-right or vice versa
         
         OUTPUT:
 
             A (6, 2) NumPy array describing the parameters of the mirrored circuit.
         """
         # Number of parameters per block
-        bsz = 2
-        params = np.reshape(params,[6,2])
-        equiv_qc = XYZEvolutionCircuit(4)
-        
-        result_params = [ParameterVector('theta'+str(k),bsz) for k in range(6)]
-        for index,param in enumerate(result_params):
-            index = index%(equiv_qc.num_qubits-1)
-            if index<int(equiv_qc.num_qubits/2):
-                equiv_qc.uxz(*param, 2*index, 2*index + 1)
-            else:
-                index = index - int(equiv_qc.num_qubits/2)
-                equiv_qc.uxz(*param, 2*index+1, 2*index + 2)
-
-
-        # Construct target unitary operator
-        target_qc = XYZEvolutionCircuit(4)
-        
-        for index,param in enumerate(params):
-            index = index%( target_qc.num_qubits-1)
-            if index<int(target_qc.num_qubits/2-1):
-                target_qc.uxz(*param, 2*index+1, 2*index + 2)
-            else:
-                index = index - int(target_qc.num_qubits/2)
-                target_qc.uxz(*param, 2*index, 2*index +1)
-
-        target = Operator(target_qc).data
+        if l2r == False:
+            equiv_qc = XYZEvolutionCircuit(4)
+            equiv_qc._construct_evolution_qc('XZ', num_layers=4,odd=False, bound=False)
+            # Construct target unitary operator
+            target_qc = XYZEvolutionCircuit(4)
+            target_qc._construct_evolution_qc('XZ', num_layers=4,odd=True, bound=False)
+            target_qc = target_qc.assign_parameters(params)
+            target = Operator(target_qc).data
+        else:
+            equiv_qc = XYZEvolutionCircuit(4)
+            equiv_qc._construct_evolution_qc('XZ', num_layers=4,odd=True, bound=False)
+            # Construct target unitary operator
+            target_qc = XYZEvolutionCircuit(4)
+            target_qc._construct_evolution_qc('XZ', num_layers=4,odd=False, bound=False)
+            target_qc = target_qc.assign_parameters(params)
+            target = Operator(target_qc).data
+            
 
         # Get parameters for the equivalent time propagator
         new_params = get_optimized_params(equiv_qc, target)
@@ -172,17 +162,63 @@ class CircuitCompressor:
         # Extract parameters
         bsz = 2
         evol_params = qc.time_delta * qc.coupling_const[np.nonzero(qc.coupling_const)]
+
         N = qc.num_qubits
         w = np.zeros(N*(N-1))
-
-        #####################
-        ### Fill this in! ###
-        #####################
-
-        # Construct compressed circuit
-        compressed = XYZEvolutionCircuit(N)
-        compressed._construct_evolution_qc(qc.propagator, num_layers=N, bound=False)
-        return compressed.assign_parameters(w)
+        if(N == 3):
+            num_layers = 2 * self.deep_qc.trotter_num
+            num_blocks = ceil(num_layers * (self.deep_qc.num_qubits - 1) / 2)
+            params = list(evol_params)*num_blocks
+            update = self.get_ybe_update(params[0:int(N*(N-1))])
+            update[4] += evol_params[0]
+            update[5] += evol_params[1]
+            for i in range(1,num_blocks-int(N*(N-1)/2)):
+                update = self.get_ybe_update(update)
+                update[4] += evol_params[0]
+                update[5] += evol_params[1]
+            if (num_blocks-3)%2 == 1:
+                compressed = XYZEvolutionCircuit(N)
+                compressed._construct_evolution_qc(qc.propagator, num_layers=N,odd=True, bound=False)
+            else:
+                compressed = XYZEvolutionCircuit(N)
+                compressed._construct_evolution_qc(qc.propagator, num_layers=N, bound=False)    
+            w = update
+            return compressed.assign_parameters(w)
+            
+        if(N == 4):
+            num_layers = 2 * self.deep_qc.trotter_num
+            if num_layers<4:
+                return self.deep_qc
+            else:
+                num_blocks = ceil(num_layers * (self.deep_qc.num_qubits - 1) / 2)
+                params = list(evol_params)*num_blocks
+                update = self.get_mirror_update(params[0:int(N*(N-1))])
+                update[8] += evol_params[0]
+                update[9] += evol_params[1] 
+                update[10] += evol_params[0] 
+                update[11] += evol_params[1]
+                for i in range(1,num_layers-4): 
+                    if i%2 == 1:
+                        update = self.get_mirror_update(update,False)
+                        update[10] += evol_params[0]
+                        update[11] += evol_params[1]
+                    else:
+                        update = self.get_mirror_update(update)
+                        update[8] += evol_params[0]
+                        update[9] += evol_params[1] 
+                        update[10] += evol_params[0] 
+                        update[11] += evol_params[1] 
+                        
+                if (num_layers-4)%2 == 1:
+                    compressed = XYZEvolutionCircuit(N)
+                    compressed._construct_evolution_qc(qc.propagator, num_layers=N,odd=True, bound=False)
+                else:
+                    compressed = XYZEvolutionCircuit(N)
+                    compressed._construct_evolution_qc(qc.propagator, num_layers=N, bound=False)    
+                    
+                w = update
+            # Construct compressed circuit
+                return compressed.assign_parameters(w)
 
 #########################
 ### Parameter fitting ###
@@ -209,4 +245,3 @@ def get_optimized_params(param_circ, target_unitary, res_tol=1e-7, max_shots=10,
     if verbose:
         print("WARNING: Good fitting parameters were not found! Residual loss is {}".format(min_loss))
     return w_opt
-

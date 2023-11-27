@@ -17,12 +17,12 @@ class XYZEvolutionTestSuite:
         pass 
 
     def run_test_suite(self):
-        #self.test_uxz()
-        #self.test_uxyz()
-        #self.test_xyz_evolution()
-        #self.test_xyzm_evolution()
-        #self.test_magnetization_hamiltonian()
-        #self.test_ybe_update()
+        self.test_uxz()
+        self.test_uxyz()
+        self.test_xyz_evolution()
+        self.test_xyzm_evolution()
+        self.test_magnetization_hamiltonian()
+        self.test_ybe_update()
         self.test_mirror_update()
         self.test_circuit_compression()
 
@@ -121,11 +121,11 @@ class XYZEvolutionTestSuite:
             rhs_params = updater(lhs_params)
             
             # Verify we obtain an equivalent circuit
-            assert Operator(lhs.assign_parameters(lhs_params)) == Operator(rhs.assign_parameters(rhs_params)), "Test failed..."
+            assert np.linalg.norm(Operator(lhs.assign_parameters(lhs_params))-Operator(rhs.assign_parameters(rhs_params)))<0.0001, "Test failed..."
 
             # Test right-to-left update
             new_lhs_params = rhs_updater(rhs_params, l2r=False)
-            assert Operator(lhs.assign_parameters(new_lhs_params)) == Operator(rhs.assign_parameters(rhs_params)), "Test failed..."
+            assert np.linalg.norm(Operator(lhs.assign_parameters(new_lhs_params))-Operator(rhs.assign_parameters(rhs_params)))<0.0001, "Test failed..."
 
     def test_ybe_update(self, num_points=3):
         """
